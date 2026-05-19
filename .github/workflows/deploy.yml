@@ -34,84 +34,113 @@ jobs:
 
     # 🏗️ Build & Push Images
 
-    - name: Build & Push API
-      run: |
-        docker build -t $REGISTRY/api_service:${IMAGE_TAG} -f api_service/Dockerfile .
-        docker push $REGISTRY/api_service:${IMAGE_TAG}
+    #- name: Build & Push API
+      #run: |
+        #docker build -t $REGISTRY/api_service:${IMAGE_TAG} -f api_service/Dockerfile .
+        #docker push $REGISTRY/api_service:${IMAGE_TAG}
 
-    - name: Build & Push CPU Worker
-      run: |
-        docker build -t $REGISTRY/worker_cpu:${IMAGE_TAG} -f worker_service/Dockerfile.cpu .
-        docker push $REGISTRY/worker_cpu:${IMAGE_TAG}
+    #- name: Build & Push CPU Worker
+      #run: |
+        #docker build -t $REGISTRY/worker_cpu:${IMAGE_TAG} -f worker_service/Dockerfile.cpu .
+        #docker push $REGISTRY/worker_cpu:${IMAGE_TAG}
 
-    - name: Build & Push IO Worker
-      run: |
-        docker build -t $REGISTRY/worker_io:${IMAGE_TAG} -f worker_service/Dockerfile.io .
-        docker push $REGISTRY/worker_io:${IMAGE_TAG}
+    #- name: Build & Push IO Worker
+      #run: |
+        #docker build -t $REGISTRY/worker_io:${IMAGE_TAG} -f worker_service/Dockerfile.io .
+        #docker push $REGISTRY/worker_io:${IMAGE_TAG}
 
-    - name: Build & Push Aggregation Worker
-      run: |
-        docker build -t $REGISTRY/worker_agg:${IMAGE_TAG} -f worker_service/Dockerfile.agg .
-        docker push $REGISTRY/worker_agg:${IMAGE_TAG}
+    #- name: Build & Push Aggregation Worker
+      #run: |
+        #docker build -t $REGISTRY/worker_agg:${IMAGE_TAG} -f worker_service/Dockerfile.agg .
+        #docker push $REGISTRY/worker_agg:${IMAGE_TAG}
 
-    - name: Build & Push Frontend
-      run: |
-        docker build -t $REGISTRY/frontend:${IMAGE_TAG} -f frontend_service/Dockerfile .
-        docker push $REGISTRY/frontend:${IMAGE_TAG}
+    #- name: Build & Push Frontend
+      #run: |
+        #docker build -t $REGISTRY/frontend:${IMAGE_TAG} -f frontend_service/Dockerfile .
+        #docker push $REGISTRY/frontend:${IMAGE_TAG}
 
     # 🚀 Deploy to Azure Container Apps
+
+    - name: Configure ACR Authentication for api_service
+      run: | 
+        az containerapp registry set \
+          --name api-service \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --server $REGISTRY \
+          --username ${{ secrets.ACR_USERNAME }} \
+          --password ${{ secrets.ACR_PASSWORD }}
 
     - name: Deploy API Service
       run: |
         az containerapp update \
           --name api-service \
-          --environment sre-agent-env1 \
-          --registry-server registrynlp.azurecr.io \
-          --registry-username registrynlp \
-          --registry-password 5aoYhckA72BEOj3HMtdLBvSRyMqlq5UEfCAORxyWuhBjficvhegsJQQJ99CEACGhslBEqg7NAAACAZCRPYvP \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image $REGISTRY/api_service:${IMAGE_TAG}
+
+
+    - name: Configure ACR Authentication for worker-cpu
+      run: | 
+        az containerapp registry set \
+          --name worker-cpu \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --server $REGISTRY \
+          --username ${{ secrets.ACR_USERNAME }} \
+          --password ${{ secrets.ACR_PASSWORD }}
+    
 
     - name: Deploy CPU Worker
       run: |
         az containerapp update \
           --name worker-cpu \
-          --environment sre-agent-env1 \
-          --registry-server registrynlp.azurecr.io \
-          --registry-username registrynlp \
-          --registry-password 5aoYhckA72BEOj3HMtdLBvSRyMqlq5UEfCAORxyWuhBjficvhegsJQQJ99CEACGhslBEqg7NAAACAZCRPYvP \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image $REGISTRY/worker_cpu:${IMAGE_TAG}
+
+    - name: Configure ACR Authentication for worker-io
+      run: | 
+        az containerapp registry set \
+          --name worker-io \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --server $REGISTRY \
+          --username ${{ secrets.ACR_USERNAME }} \
+          --password ${{ secrets.ACR_PASSWORD }}
 
     - name: Deploy IO Worker
       run: |
         az containerapp update \
           --name worker-io \
-          --environment sre-agent-env1 \
-          --registry-server registrynlp.azurecr.io \
-          --registry-username registrynlp \
-          --registry-password 5aoYhckA72BEOj3HMtdLBvSRyMqlq5UEfCAORxyWuhBjficvhegsJQQJ99CEACGhslBEqg7NAAACAZCRPYvP \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image $REGISTRY/worker_io:${IMAGE_TAG}
+
+    - name: Configure ACR Authentication for worker-agg
+      run: | 
+        az containerapp registry set \
+          --name worker-agg \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --server $REGISTRY \
+          --username ${{ secrets.ACR_USERNAME }} \
+          --password ${{ secrets.ACR_PASSWORD }}
+    
 
     - name: Deploy Aggregation Worker
       run: |
         az containerapp update \
           --name worker-agg \
-          --environment sre-agent-env1 \
-          --registry-server registrynlp.azurecr.io \
-          --registry-username registrynlp \
-          --registry-password 5aoYhckA72BEOj3HMtdLBvSRyMqlq5UEfCAORxyWuhBjficvhegsJQQJ99CEACGhslBEqg7NAAACAZCRPYvP \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image $REGISTRY/worker_agg:${IMAGE_TAG}
+
+    - name: Configure ACR Authentication for frontend
+      run: | 
+        az containerapp registry set \
+          --name frontend \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --server $REGISTRY \
+          --username ${{ secrets.ACR_USERNAME }} \
+          --password ${{ secrets.ACR_PASSWORD }}
+    
 
     - name: Deploy Frontend
       run: |
         az containerapp update \
           --name frontend \
-          --environment sre-agent-env1 \
-          --registry-server registrynlp.azurecr.io \
-          --registry-username registrynlp \
-          --registry-password 5aoYhckA72BEOj3HMtdLBvSRyMqlq5UEfCAORxyWuhBjficvhegsJQQJ99CEACGhslBEqg7NAAACAZCRPYvP \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image $REGISTRY/frontend:${IMAGE_TAG}
