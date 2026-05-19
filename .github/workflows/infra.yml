@@ -12,7 +12,7 @@ env:
   POSTGRES_SERVER: nlp-postgres-server
   POSTGRES_DB: app_db
 
-  CONTAINER_ENV: sre-agent-env
+  CONTAINER_ENV: sre-agent-env1
 
 jobs:
   provision-infra:
@@ -31,14 +31,14 @@ jobs:
         creds: ${{ secrets.AZURE_CREDENTIALS }}
 
     #########################################################
-    # Resource Group
+    # Resource Group - Create this manually
     #########################################################
 
-    - name: Create Resource Group
-      run: |
-        az group create \
-          --name $RESOURCE_GROUP \
-          --location $LOCATION
+    #- name: Create Resource Group
+      #run: |
+        #az group create \
+          #--name $RESOURCE_GROUP \
+          #--location $LOCATION
 
     #########################################################
     # Azure Container Registry
