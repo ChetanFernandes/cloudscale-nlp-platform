@@ -34,27 +34,27 @@ jobs:
 
     # 🏗️ Build & Push Images
 
-    #- name: Build & Push API
+    - name: Build & Push API
       run: |
         docker build -t $REGISTRY/api_service:${IMAGE_TAG} -f api_service/Dockerfile .
         docker push $REGISTRY/api_service:${IMAGE_TAG}
 
-    #- name: Build & Push CPU Worker
+    - name: Build & Push CPU Worker
       run: |
         docker build -t $REGISTRY/worker_cpu:${IMAGE_TAG} -f worker_service/Dockerfile.cpu .
         docker push $REGISTRY/worker_cpu:${IMAGE_TAG}
 
-    #- name: Build & Push IO Worker
+    - name: Build & Push IO Worker
       run: |
         docker build -t $REGISTRY/worker_io:${IMAGE_TAG} -f worker_service/Dockerfile.io .
         docker push $REGISTRY/worker_io:${IMAGE_TAG}
 
-    #- name: Build & Push Aggregation Worker
+    - name: Build & Push Aggregation Worker
       run: |
         docker build -t $REGISTRY/worker_agg:${IMAGE_TAG} -f worker_service/Dockerfile.agg .
         docker push $REGISTRY/worker_agg:${IMAGE_TAG}
 
-    #- name: Build & Push Frontend
+    - name: Build & Push Frontend
       run: |
         docker build -t $REGISTRY/frontend:${IMAGE_TAG} -f frontend_service/Dockerfile .
         docker push $REGISTRY/frontend:${IMAGE_TAG}
