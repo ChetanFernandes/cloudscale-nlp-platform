@@ -65,6 +65,10 @@ jobs:
       run: |
         az containerapp update \
           --name api-service \
+          --environment sre-agent-env1 \
+          --registry-server registrynlp.azurecr.io \
+          --registry-username registrynlp \
+          --registry-password 5aoYhckA72BEOj3HMtdLBvSRyMqlq5UEfCAORxyWuhBjficvhegsJQQJ99CEACGhslBEqg7NAAACAZCRPYvP \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image $REGISTRY/api_service:${IMAGE_TAG}
 
@@ -72,6 +76,10 @@ jobs:
       run: |
         az containerapp update \
           --name worker-cpu \
+          --environment sre-agent-env1 \
+          --registry-server registrynlp.azurecr.io \
+          --registry-username registrynlp \
+          --registry-password 5aoYhckA72BEOj3HMtdLBvSRyMqlq5UEfCAORxyWuhBjficvhegsJQQJ99CEACGhslBEqg7NAAACAZCRPYvP \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image $REGISTRY/worker_cpu:${IMAGE_TAG}
 
@@ -79,6 +87,10 @@ jobs:
       run: |
         az containerapp update \
           --name worker-io \
+          --environment sre-agent-env1 \
+          --registry-server registrynlp.azurecr.io \
+          --registry-username registrynlp \
+          --registry-password 5aoYhckA72BEOj3HMtdLBvSRyMqlq5UEfCAORxyWuhBjficvhegsJQQJ99CEACGhslBEqg7NAAACAZCRPYvP \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image $REGISTRY/worker_io:${IMAGE_TAG}
 
@@ -86,6 +98,10 @@ jobs:
       run: |
         az containerapp update \
           --name worker-agg \
+          --environment sre-agent-env1 \
+          --registry-server registrynlp.azurecr.io \
+          --registry-username registrynlp \
+          --registry-password 5aoYhckA72BEOj3HMtdLBvSRyMqlq5UEfCAORxyWuhBjficvhegsJQQJ99CEACGhslBEqg7NAAACAZCRPYvP \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image $REGISTRY/worker_agg:${IMAGE_TAG}
 
@@ -93,5 +109,9 @@ jobs:
       run: |
         az containerapp update \
           --name frontend \
+          --environment sre-agent-env1 \
+          --registry-server registrynlp.azurecr.io \
+          --registry-username registrynlp \
+          --registry-password 5aoYhckA72BEOj3HMtdLBvSRyMqlq5UEfCAORxyWuhBjficvhegsJQQJ99CEACGhslBEqg7NAAACAZCRPYvP \
           --resource-group ${{ secrets.RESOURCE_GROUP }} \
           --image $REGISTRY/frontend:${IMAGE_TAG}
