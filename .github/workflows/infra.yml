@@ -70,28 +70,28 @@ jobs:
     # Azure PostgreSQL Flexible Server
     #########################################################
 
-    - name: Create PostgreSQL
-      run: |
-        az postgres flexible-server create \
-          --resource-group $RESOURCE_GROUP \
-          --name $POSTGRES_SERVER \
-          --location $LOCATION \
-          --admin-user postgresadmin \
-          --admin-password ${{ secrets.POSTGRES_PASSWORD }} \
-          --sku-name Standard_B1ms \
-          --tier Burstable \
-          --storage-size 32 \
-          --version 16 \
-          --public-access 0.0.0.0
+    #- name: Create PostgreSQL
+      #run: |
+        #az postgres flexible-server create \
+          #--resource-group $RESOURCE_GROUP \
+          #--name $POSTGRES_SERVER \
+          #--location $LOCATION \
+          #--admin-user postgresadmin \
+          #--admin-password ${{ secrets.POSTGRES_PASSWORD }} \
+          #--sku-name Standard_B1ms \
+          #--tier Burstable \
+          #--storage-size 32 \
+          #--version 16 \
+          #--public-access 0.0.0.0
 
     #########################################################
     # Create PostgreSQL Database
     #########################################################
     - name: Create PostgreSQL Database 
-      run: | 
-        az postgres flexible-server db create \ 
-        --resource-group $RESOURCE_GROUP \ 
-        --server-name $POSTGRES_SERVER \ 
+      run: |
+        az postgres flexible-server db create \
+        --resource-group $RESOURCE_GROUP \
+        --server-name $POSTGRES_SERVER \
         --database-name $POSTGRES_DB
 
     #########################################################
