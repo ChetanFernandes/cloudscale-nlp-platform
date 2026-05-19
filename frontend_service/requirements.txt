@@ -1,0 +1,5 @@
+streamlit
+requests
+spacy
+python-dotenv
+python-json-logger

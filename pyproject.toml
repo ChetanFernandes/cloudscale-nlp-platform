@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "intelligent_text_understanding"
+version = "1.0.0"
+description = "End-to-End Intelligent Text Understanding System"
+license = {file = "LICENSE"}
+authors = [
+    { name = "Chetan Fernandis", email = "chetanfern2@gmail.com" }
+]
+requires-python = ">=3.12"
+
+[tool.setuptools.packages.find]
+where = ["src"] 

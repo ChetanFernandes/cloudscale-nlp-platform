@@ -1,0 +1,1058 @@
+''' 
+🏆 Rule of Thumb
+
+Whenever you:
+
+Write to BytesIO
+
+Write to file-like object
+
+Write to stream
+
+And then:
+
+Read it
+
+Send it
+
+Return it
+
+You MUST:
+
+buffer.seek(0)
+'''
+
+[User Upload]
+        ↓
+[Streamlit]
+        ↓
+[FastAPI Backend]
+        ↓
+Process File 1 → Excel
+Process File 2 → Excel
+Process File 3 → Excel
+        ↓
+[Create ZIP in Memory]
+        ↓
+[StreamingResponse]
+        ↓
+[Download ZIP]
+
+If someone uploads:
+
+50 large Excel files
+
+Each 50MB
+
+Then memory usage may spike.
+
+Later, if needed, you can:
+
+Stream chunk-wise
+
+Add file size validation
+
+But for now, your architecture is solid.
+
+🧵 Threading:
+
+Multiple threads
+
+OS manages switching
+
+Context switching overhead
+
+Shares memory
+
+Limited by GIL
+
+⚡ Async:
+
+Single thread
+
+Uses event loop
+
+You must write await
+
+Very lightweight
+
+Best for I/O
+
+🧵 Threading
+
+Multiple workers exist
+
+OS switches them
+
+But GIL blocks parallel CPU
+
+⚡ Async
+
+Only one worker exists
+
+It voluntarily switches when it sees await
+
+No OS switching
+
+------------------------
+Multiprocessor has 
+Its own Python interpreter
+
+Its own memory
+
+Its own GIL
+---------------------
+
+Real World Optimization Strategy
+
+There are 3 levels of parallelism:
+
+1️⃣ Multiple users → multiple FastAPI workers
+2️⃣ Multiple files → multiprocessing
+3️⃣ Single large file → split rows + multiprocessing
+
+Production systems combine these.
+
+---------------------
+✔ Async → I/O waiting
+✔ Threading → limited by GIL
+✔ Multiprocessing → true CPU parallel
+✔ Worker processes → request-level parallelism
+✔ CPU-bound rule → workers ≈ cores
+✔ Horizontal scaling → production strategy
+
+---------------------
+🧠 Real Industry Strategy (Very Important)
+
+In production, companies follow this order:
+
+Step 1 → Optimize code
+
+Use async properly
+
+Use threadpool for blocking IO
+
+Avoid unnecessary CPU spikes
+
+Step 2 → Increase workers (inside same machine)
+Step 3 → Upgrade machine size
+Step 4 → Horizontal scaling (multiple machines)
+------------------------------
+| Situation                   | Best Approach                     |
+| --------------------------- | --------------------------------- |
+| Small traffic               | Increase workers                  |
+| Medium traffic              | Increase workers + bigger machine |
+| Large unpredictable traffic | Horizontal scaling                |
+| Need high availability      | Horizontal scaling                |
+| Budget constrained          | Single machine + optimize         |
+-----------------------------------------------
+1 worker  → fast
+4 workers → faster
+8 workers → peak performance
+12 workers → slower
+16 workers → much slower
+-----------------------------
+Client
+   ↓
+Load Balancer
+   ↓
+Kubernetes Cluster
+   ↓
+Pods (Docker Containers)
+   ↓
+Gunicorn + Uvicorn
+   ↓
+FastAPI
+------------
+
+🧠 Proper Layered Architecture
+🟢 Service Layer
+
+Business logic only
+
+No HTTP knowledge
+
+No API formatting
+
+Let exceptions propagate
+
+🔵 FastAPI Layer
+
+Catch exceptions
+
+Log properly
+
+Convert to HTTPException
+;;;
+| Method           | Works On     | Behavior                   |
+| ---------------- | ------------ | -------------------------- |
+| `.replace()`     | Series level | Replaces whole cell values |
+| `.str.replace()` | String level | Replaces inside string     |
+
+
+.........................................
+Client
+   ↓
+FastAPI (Gunicorn + Uvicorn workers)
+   ↓
+Redis (job queue + progress tracking)
+   ↓
+Celery workers (NLP processing)
+   ↓
+Disk / S3 (file storage)
+   ↓
+Database (PostgreSQL - metadata)
+
+--------------------------------------------
+If scaled:
+
+Docker containers
+↓
+Kubernetes cluster
+↓
+Auto scaling
+
+-------------
+Nginx (reverse proxy)
+
+FastAPI
+
+Gunicorn
+
+Redis
+
+Celery
+
+PostgreSQL
+
+Azure Blob / S3
+
+Docker
+
+Docker Compose
+
+(Optional) Kubernetes concept
+
+------------------------------
+To look professional:
+
+Enable Redis persistence
+
+Mention fault tolerance
+
+Use retry policies in Celery
+
+idempotent and atomic output writing.
+
+That shows real production awareness.
+
+Idempotency + Job locking
+
+Atomic operations prevent corruption.
+
+You now understand:
+
+API layer
+
+Worker layer
+
+Queue layer
+
+Storage layer
+
+DB as authority
+
+Idempotency
+
+Fault tolerance
+
+Horizontal scaling
+
+Memory planning
+
+That’s serious backend engineering knowledge.
+-------------------------------------------------
+
+3️⃣ What Each Component Does
+✅ FastAPI + Gunicorn
+
+Handles HTTP requests
+
+Validates input
+
+Stores file
+
+Creates job
+
+Returns job_id
+
+It NEVER runs heavy NLP directly.
+
+✅ Redis
+
+Used for:
+
+Message broker (Celery queue)
+
+Job status
+
+Progress %
+
+Short-term caching
+
+NOT for storing dataframe.
+
+✅ Celery Workers
+
+Separate worker containers.
+
+They:
+
+Pick job from Redis queue
+
+Load file
+
+Run spaCy in chunks
+
+Save output
+
+Update progress in Redis
+
+Heavy CPU work happens here.
+
+✅ Disk or S3
+
+Stores:
+
+Uploaded files
+
+Processed results
+
+For real-world production → use S3 (cloud object storage)
+
+✅ PostgreSQL (Optional but professional)
+
+Stores:
+
+job_id
+
+user_id
+
+file_path
+
+status
+
+timestamps
+
+For persistence.
+
+4️⃣ Flow Example (Production Style)
+Step 1 — Upload API
+
+User uploads file.
+
+API:
+
+Save file to disk/S3
+Create job_id
+Push job to Celery queue
+Store job metadata in DB
+Return job_id
+
+Response:
+
+{
+  "job_id": "abc123",
+  "status": "processing"
+}
+Step 2 — Worker Processes
+
+Celery worker:
+
+Load file
+Process in chunks with spaCy
+Update Redis progress:
+   job_id → 25%
+   job_id → 50%
+   job_id → 100%
+Save output
+Update DB status → completed
+Step 3 — Frontend Polling API
+
+Frontend calls:
+
+GET /job-status/{job_id}
+
+API checks Redis or DB:
+
+{
+  "status": "processing",
+  "progress": 65
+}
+
+When done:
+
+{
+  "status": "completed",
+  "download_url": "..."
+}
+5️⃣ Gunicorn + Workers
+
+Production command:
+
+gunicorn main:app -k uvicorn.workers.UvicornWorker -w 4
+
+4 worker processes
+
+Each worker handles async requests
+
+Heavy NLP NOT done here
+
+6️⃣ Docker Setup
+
+You’ll have:
+
+FastAPI container
+
+Redis container
+
+Celery worker container
+
+(Optional) Postgres container
+
+Using docker-compose locally.
+
+7️⃣ Kubernetes Scaling
+
+In real cloud:
+
+Deploy API as Deployment
+
+Deploy workers separately
+
+Use Horizontal Pod Autoscaler
+
+Scale workers based on CPU usage
+
+If NLP load increases → worker pods increase.
+
+🧠 Why This Is Professional Architecture
+
+Because:
+
+API stays fast
+
+Workers handle heavy load
+
+Memory controlled
+
+Can scale horizontally
+
+Fault tolerant
+
+Resume gold
+
+📌 Resume-Level Statement
+
+You can write:
+
+Designed and implemented a production-grade asynchronous NLP processing pipeline using FastAPI, Celery, Redis, and Docker. Implemented job queue architecture with progress tracking and scalable worker-based processing deployable on Kubernetes.
+
+That’s senior-level.
+
+-----------------------
+
+Your Project	Netflix
+Redis	Kafka
+Celery	Custom distributed workers
+Disk/S3	Massive distributed object storage
+Kubernetes	Kubernetes + internal orchestration
+Gunicorn	Envoy + NGINX + service mesh
+
+---------------------------------------------------------
+🔥 What Redis Is Actually For
+
+Redis = very fast in-memory key-value store.
+
+Think of it like:
+
+A super fast sticky note board shared between multiple servers.
+
+It is NOT a storage warehouse.
+It is a coordination tool.
+
+✅ Real Production Use Cases of Redis
+1️⃣ Session Management
+
+Example:
+
+User logs in
+→ Store session_id → user_id mapping in Redis
+
+Why?
+Because:
+
+Fast lookup
+
+Shared across multiple backend instances
+
+2️⃣ Caching Expensive Results
+
+Example:
+
+User requests NLP result for same file again
+
+Instead of recomputing:
+
+Check Redis
+If exists → return cached result
+
+This saves CPU.
+
+3️⃣ Background Job Status Tracking
+
+Example:
+
+Upload large file
+Start background processing
+
+Redis stores:
+
+session123 → {status: "processing", progress: 65%}
+
+Frontend polls API to check progress.
+
+4️⃣ Rate Limiting
+
+Example:
+
+Limit 100 requests per minute per user
+
+Redis stores request counters.
+
+5️⃣ Distributed Systems (Multiple Servers)
+
+If you have:
+
+Load Balancer
+→ Server A
+→ Server B
+→ Server C
+
+You cannot store session in memory of one server.
+Redis becomes shared memory.
+
+❌ What Redis Is NOT For
+
+Not for storing 100MB dataframes
+
+Not for storing large files
+
+Not for long-term storage
+
+Because:
+
+It uses RAM
+
+RAM is expensive
+
+Large objects slow it down
+
+🧠 In Your Current Case
+
+You are:
+
+Single backend
+
+Processing file immediately
+
+Not doing distributed system
+
+So Redis is unnecessary complexity.
+
+🏗 When YOU Will Actually Need Redis
+
+If you later build:
+
+Async background NLP processing
+
+Progress tracking
+
+Multi-user concurrent processing
+
+Docker with multiple replicas
+
+Kubernetes scaling
+
+Then Redis becomes useful.
+------------------------------------------------------------
+
+If you REALLY want Netflix-level understanding, add:
+
+Task retries
+
+Exponential backoff
+
+Idempotency key
+
+Rate limiting
+
+Structured logging (JSON logs)
+
+Health check endpoint
+
+Graceful shutdown
+
+File streaming instead of full memory load
+
+Even if project is small — architecture shows maturity.
+-------------------------------------------------------
+We build in this order:
+
+1️⃣ Core Configuration Layer
+2️⃣ Logging
+3️⃣ Database Layer
+4️⃣ Redis Layer
+5️⃣ Celery Setup
+6️⃣ API Layer
+7️⃣ Streaming Upload
+8️⃣ Rate Limiting
+9️⃣ Idempotency
+🔟 Retry & Backoff
+11️⃣ Health & Shutdown
+12️⃣ CI/CD
+13️⃣ Deployment
+-----------------------------
+| Feature               | Layer Responsible       |
+| --------------------- | ----------------------- |
+| Task retries          | Celery config           |
+| Exponential backoff   | Celery retry strategy   |
+| Idempotency key       | API layer + DB          |
+| Rate limiting         | API layer + Redis       |
+| Structured logging    | Core logging config     |
+| Health check          | API layer               |
+| Graceful shutdown     | FastAPI + Celery config |
+| File streaming        | API layer               |
+| CI/CD                 | GitHub Actions          |
+| Azure / Render deploy | Docker                  |
+
+
+
+Purpose	Command
+List tables	\dt
+Describe table	\d jobs
+View data	SELECT * FROM jobs;
+Exit multiline	Ctrl + C
+TRUNCATE TABLE jobs;
+DELETE TABLE jobs;
+
+
+
+-------------------commands Used for local dev----------------------
+      # TO pull redis and postgress 
+docker compose -f infrastructure/docker-compose.dev.yml down -v # To reset DB
+
+docker exec -it app_postgres psql -U postgres -d app_db
+docker exec -it app_redis redis-cli FLUSHDB - clean redis queue 
+docker exec -it app_redis redis-cli KEYS "*" 
+
+GET job_status:<your_job_id>
+
+
+
+celery -A worker_service.app.celery_worker_agg.celery_app worker -Q aggregation -n worker.aggregation@%h --loglevel=info --pool=solo --concurrency=2
+celery -A worker_service.app.celery_worker_cpu.celery_app worker -Q cpu -n worker.cpu@%h --loglevel=info --pool=solo --concurrency=2
+celery -A worker_service.app.celery_worker_io.celery_app worker -Q io -n worker.io@%h --loglevel=info --pool=threads --concurrency=2
+
+
+celery -A worker_service.app.celery_worker.celery_app worker \
+  -Q io,cpu,aggregation \
+  --pool=threads \
+  --concurrency=2 \
+  --loglevel=info
+
+# IO workers
+celery -A worker_service.app.celery_worker_io.celery_app worker -Q io -c 20
+
+# CPU workers
+celery -A worker_service.app.celery_worker_cpu.celery_app worker -Q cpu -c 4
+
+# Aggregation workers
+celery -A worker_service.app.celery_worker_agg.celery_app worker -Q aggregation -c 2
+
+celery -A worker_service.app.celery_worker.celery_app inspect registered
+
+
+👉 Meaning:
+-A ...celery_app → where your Celery app is defined
+worker → start a worker process
+-Q celery → listen only to celery queue
+-n worker.celery@%h → worker name (hostname-based)
+--loglevel=info → show info-level logs
+
+celery -A worker_service.app.celery_worker.celery_app worker -Q aggregation -n worker.aggregation@%h --loglevel=info --pool=solo
+celery -A worker_service.app.celery_worker.celery_app worker -Q aggregation -n worker.aggregation@%h --loglevel=info --pool=threads --concurrency=2
+
+# Start Celery worker
+# Load celery app
+# Listen to Redis queue
+# Execute tasks when they appear
+
+docker exec -it app_redis redis-cli
+
+
+-------------------------------------------------
+Flow during API request:
+
+Request comes
+     ↓
+get_db() creates Session
+     ↓
+API uses DB session
+     ↓
+commit / rollback
+     ↓
+session closed
+
+-------------------------------------------------
+SQLAlchemy	Bank Analogy
+engine	Bank building
+connection pool	bank counters
+session	your interaction with teller
+commit	finalize transaction
+rollback	cancel transaction
+-------------------------------------------------
+Code	Purpose
+create_engine()	Connect to database + manage connection pool
+pool_pre_ping	Ensure connection is alive
+sessionmaker()	Factory to create DB sessions
+bind=engine	Connect session to database engine
+autocommit=False	Transactions must be committed manually
+autoflush=False	Changes are not automatically pushed to DB
+-----------------------------------
+Each layer has a job.
+
+API → receives request
+
+Service → decides what to do (business logic)
+
+Repository → talks to database
+
+Database → stores data
+-----------------------------
+API receives file
+↓
+Service creates job
+↓
+Service sends job to queue (later Celery)
+↓
+Service returns job_id
+
+---------------
+Router receives request
+      ↓
+Router calls JobService
+      ↓
+Service calls JobRepository
+      ↓
+Repository creates Job object
+      ↓
+SQLAlchemy inserts row into database
+      ↓
+Job returned back up the layers
+
+---------------------------------------
+
+User request
+     ↓
+API creates job
+     ↓
+API sends task to queue
+     ↓
+Worker processes task in background
+     ↓
+Worker updates database
+-------------------------------
+API receives request
+      ↓
+Create job in Postgres
+      ↓
+Send task to Redis queue
+      ↓
+Return job_id immediately
+      ↓
+Worker pulls task from Redis
+      ↓
+Worker processes file
+------------------------------
+Streaming processing
+Chunked uploads
+Distributed workers
+Message queues
+Retry + backoff
+Idempotency
+
+How Netflix/large systems design job pipelines using Celery chains(seq), groups(para), and chords(para + Final step)
+
+AWS S3
+Azure Blob Storage
+Google Cloud Storage
+
+They provide:
+large file support
+multi-part uploads
+resumable uploads
+parallel uploads
+high durability
+
+------------------------
+FastAPI
+↓
+Upload URL generation
+↓
+MinIO (S3-compatible storage)
+↓
+Postgres job tracking
+↓
+Redis queue
+↓
+Celery workers
+    ↓
+    Group (parallel chunk processing)
+    ↓
+    Chord (aggregate results)
+-----------------------------------
+Remaining part
+1️⃣ Graceful shutdown (FastAPI + Celery)
+2️⃣ Docker containers for API + worker
+3️⃣ Docker compose production setup
+4️⃣ CI/CD pipeline (GitHub Actions)
+5️⃣ Azure deployment 
+1️⃣ Observability (Monitoring + Metrics)
+Tool	Purpose
+Prometheus	collect metrics
+Grafana	dashboards
+Flower	Celery monitoring
+2️⃣ Job Progress Tracking
+3️⃣ Result Storage
+
+--------------------------------
+Upload file
+     │
+     ▼
+MinIO (S3)
+     │
+     ▼
+Celery Task
+Extract columns
+     │
+     ▼
+Store columns in DB
+      │
+      ▼
+Frontend calls API
+GET /jobs/{job_id}/columns
+      │
+      ▼
+User selects columns
+     │
+     ▼
+Celery Task
+Distribute chunks
+     │
+     ▼
+Parallel Celery workers
+     │
+     ▼
+spaCy NLP pipeline
+     │
+     ▼
+Store results in DB / S3
+
+---------------------------------
+
+Celery worker
+   │
+   ▼
+process_file()
+   │
+   ▼
+Exception
+   │
+   ▼
+except block
+   │
+   ├─ rollback
+   ├─ update job status
+   │
+   ▼
+raise
+   │
+   ▼
+Celery catches exception
+   │
+   ▼
+Task marked FAILED
+
+----------------------
+Yes — exactly 👍. In production systems, real-time updates are often done using:
+
+WebSockets
+
+Server-Sent Events (SSE)
+
+Kafka / message streams
+
+But they are used in different situations. Let’s clarify when each is used so it’s very clear.
+
+1️⃣ WebSockets (most common for real-time UI)
+
+WebSockets allow two-way communication between the client and server.
+
+Flow:
+
+Client connects
+     ↓
+Connection stays open
+     ↓
+Server pushes updates instantly
+
+Example:
+
+Upload file
+     ↓
+Worker finishes processing
+     ↓
+Server pushes "job completed"
+     ↓
+UI updates immediately
+
+Technologies used:
+
+FastAPI WebSockets
+
+Socket.io
+
+Django Channels
+
+Node.js WebSocket servers
+
+Used by:
+
+Slack
+
+Trading dashboards
+
+live notifications
+
+collaborative tools
+
+2️⃣ Server-Sent Events (SSE)
+
+SSE is simpler than WebSockets.
+
+It is one-way communication:
+
+Server → Client
+
+The client subscribes and the server pushes updates.
+
+Example:
+
+Client subscribes to /jobs/123/events
+     ↓
+Worker finishes
+     ↓
+Server pushes "completed"
+
+Used when:
+
+UI only needs updates
+
+no client-to-server messaging
+
+Example usage:
+
+job progress
+
+notifications
+
+monitoring dashboards
+
+3️⃣ Kafka (not directly for UI)
+
+Kafka is not used directly by the frontend.
+
+It is used inside backend systems to stream events between services.
+
+Example architecture:
+
+Worker finishes job
+     ↓
+Publish event → Kafka
+     ↓
+Notification service consumes event
+     ↓
+WebSocket server pushes update to UI
+
+Kafka is used by companies like:
+
+Uber
+
+Netflix
+
+LinkedIn
+
+Airbnb
+
+For:
+
+event streaming
+
+microservice communication
+
+data pipelines
+
+4️⃣ Typical production architecture
+
+Example used by many companies:
+
+Frontend (React)
+        │
+        ▼
+API Gateway
+        │
+        ▼
+Job Service
+        │
+        ▼
+Queue (Kafka / Redis)
+        │
+        ▼
+Workers
+        │
+        ▼
+Database
+        │
+        ▼
+Event emitted
+        │
+        ▼
+WebSocket server pushes update to UI
+5️⃣ Why your polling approach is still common
+
+Even big systems sometimes still use polling.
+
+Example:
+
+UI → GET /job/status every 3 seconds
+
+Reasons:
+
+simpler
+
+easier to scale
+
+fewer connection issues
+
+Many ML dashboards use polling.

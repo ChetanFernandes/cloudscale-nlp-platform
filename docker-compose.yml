@@ -1,0 +1,99 @@
+version: "3.9"
+
+services:
+
+  api_service:
+    build:
+     context: .
+     dockerfile: api_service/Dockerfile
+    container_name: api_service
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    image: redis:7
+    container_name: redis
+    ports:
+      - "6379:6379"
+
+  postgres:
+    image: postgres:15
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: app_db
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  
+
+   # CPU Worker (NLP)
+  worker_cpu:
+    build:
+      context: .
+      dockerfile: worker_service/Dockerfile.cpu
+    container_name: worker_cpu
+    #command: celery -A worker_service.app.celery_worker.celery_app worker -Q cpu --loglevel=info --concurrency=2
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ./logs/cpu:/app/logs
+
+
+  # IO Worker
+  worker_io:
+    build:
+      context: .
+      dockerfile: worker_service/Dockerfile.io
+    container_name: worker_io
+    #command: celery -A worker_service.app.celery_worker.celery_app worker -Q io --loglevel=info --pool=threads --concurrency=2
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ./logs/io:/app/logs
+      
+
+  # Aggregation Worker
+  worker_agg:
+    build:
+      context: .
+      dockerfile: worker_service/Dockerfile.agg
+    container_name: worker_agg
+    #command: celery -A worker_service.app.celery_worker.celery_app worker -Q aggregation --loglevel=info --concurrency=2
+    env_file:
+      - .env
+    depends_on:
+      - redis
+      - postgres
+    volumes:
+      - ./logs/agg:/app/logs
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend_service/Dockerfile
+    container_name: frontend
+    ports:
+      - "8501:8501"
+    environment:
+      - API_URL=http://api_service:8000
+    depends_on:
+      - api_service
+
+volumes:
+  postgres_data:

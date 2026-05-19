@@ -1,0 +1,46 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:15
+    container_name : app_postgres
+    restart: always
+    environment:
+      POSTGRES_USER : postgres
+      POSTGRES_PASSWORD : postgres
+      POSTGRES_DB : app_db
+    ports:
+      - "5432:5432" # Export post 5432 to your laptop
+    volumes:
+      -  postgres_data:/var/lib/postgresql/data  #Saves data in a Docker volume (so data won’t disappear on restart)
+
+  redis:
+    image : redis:7
+    container_name: app_redis
+    restart: always
+    ports:
+      - "6379:6379" # Export post 5432 to your laptop
+    volumes:
+      - redis_data:/data
+
+ 
+  # minio:
+    #image: minio/minio:latest
+    #container_name: app_minio
+    #restart: always
+    #command: server /data --console-address ":9001"
+    #ports:
+      #- "9000:9000"
+      #- "9001:9001"
+    #environment:
+      #MINIO_ROOT_USER: minioadmin
+      #MINIO_ROOT_PASSWORD: minioadmin
+    #volumes:
+      #- minio_data:/data
+  
+
+volumes:
+  postgres_data:
+  redis_data:
+  #minio_data:

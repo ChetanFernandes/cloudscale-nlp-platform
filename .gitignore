@@ -214,5 +214,18 @@ marimo/_static/
 marimo/_lsp/
 __marimo__/
 
+:::writing{variant="standard" id="42761"}
+```gitignore id="xyacbr"
+
 # Streamlit
 .streamlit/secrets.toml
+.env
+__pycache__/
+*.pyc
+logs/
+venv/
+.idea/
+.vscode/
+*.db
+~$*
+```

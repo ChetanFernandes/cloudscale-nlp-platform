@@ -1,0 +1,26 @@
+FROM python:3.12-slim
+
+WORKDIR /app
+
+ENV PYTHONPATH=/app
+
+# Copy worker requirements
+COPY worker_service/requirements_cpu.txt .
+COPY worker_service/requirements_base.txt .
+
+RUN pip install --no-cache-dir -r requirements_base.txt \
+    && pip install --no-cache-dir -r requirements_cpu.txt
+
+# Download models at build time (important)
+RUN python -m spacy download en_core_web_sm
+RUN python -c "from sentence_transformers import SentenceTransformer; SentenceTransformer('all-MiniLM-L6-v2')"
+
+# Copy worker + utility
+COPY worker_service/ ./worker_service/
+COPY utility/ ./utility/
+COPY data_layer/ ./data_layer/
+COPY common/ ./common
+COPY logger/ ./logger/
+
+
+CMD ["celery", "-A", "worker_service.app.celery_worker_cpu.celery_app", "worker", "-Q", "cpu", "--loglevel=info", "--concurrency=2"]

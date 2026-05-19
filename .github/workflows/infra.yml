@@ -1,0 +1,179 @@
+name: Provision Azure Infrastructure
+
+on:
+  workflow_dispatch:
+
+env:
+  RESOURCE_GROUP: NLP
+  LOCATION: centralindia
+
+  ACR_NAME: registrynlp
+  REDIS_NAME: nlpredis
+  POSTGRES_SERVER: nlp-postgres-server
+  POSTGRES_DB: app_db
+
+  CONTAINER_ENV: sre-agent-env
+
+jobs:
+  provision-infra:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    # Checkout Repo
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # Azure Login
+    - name: Azure Login
+      uses: azure/login@v2
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    #########################################################
+    # Resource Group
+    #########################################################
+
+    - name: Create Resource Group
+      run: |
+        az group create \
+          --name $RESOURCE_GROUP \
+          --location $LOCATION
+
+    #########################################################
+    # Azure Container Registry
+    #########################################################
+
+    - name: Create Azure Container Registry
+      run: |
+        az acr create \
+          --resource-group $RESOURCE_GROUP \
+          --name $ACR_NAME \
+          --sku Basic \
+          --admin-enabled true
+
+    #########################################################
+    # Azure Redis Cache
+    #########################################################
+
+    - name: Create Azure Redis Cache
+      run: |
+        az redis create \
+          --location $LOCATION \
+          --name $REDIS_NAME \
+          --resource-group $RESOURCE_GROUP \
+          --sku Basic \
+          --vm-size C0 \
+          --enable-non-ssl-port false
+          --set publicNetworkAccess=Enabled
+
+    #########################################################
+    # Azure PostgreSQL Flexible Server
+    #########################################################
+
+    - name: Create PostgreSQL
+      run: |
+        az postgres flexible-server create \
+          --resource-group $RESOURCE_GROUP \
+          --name $POSTGRES_SERVER \
+          --location $LOCATION \
+          --admin-user postgresadmin \
+          --admin-password ${{ secrets.POSTGRES_PASSWORD }} \
+          --sku-name Standard_B1ms \
+          --tier Burstable \
+          --storage-size 32 \
+          --version 16 \
+          --database-name $POSTGRES_DB \
+          --public-access 0.0.0.0
+
+    #########################################################
+    # Container Apps Environment
+    #########################################################
+
+    - name: Create Container Apps Environment
+      run: |
+        az containerapp env create \
+          --name $CONTAINER_ENV \
+          --resource-group $RESOURCE_GROUP \
+          --location $LOCATION
+
+    #########################################################
+    # Get ACR Login Server
+    #########################################################
+
+    - name: Get ACR Login Server
+      id: acr
+      run: |
+        LOGIN_SERVER=$(az acr show \
+          --name $ACR_NAME \
+          --query loginServer \
+          --output tsv)
+
+        echo "LOGIN_SERVER=$LOGIN_SERVER" >> $GITHUB_ENV
+
+    #########################################################
+    # Create Initial Container Apps
+    #########################################################
+
+    - name: Create API Service
+      run: |
+        az containerapp create \
+          --name api-service \
+          --resource-group $RESOURCE_GROUP \
+          --environment $CONTAINER_ENV \
+          --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest \
+          --target-port 8000 \
+          --ingress external \
+          --cpu 1 \
+          --memory 2Gi \
+          --min-replicas 1 \
+          --max-replicas 5 \
+
+    - name: Create Frontend
+      run: |
+        az containerapp create \
+          --name frontend \
+          --resource-group $RESOURCE_GROUP \
+          --environment $CONTAINER_ENV \
+          --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest \
+          --target-port 8501 \
+          --ingress external \
+          --cpu 1 \
+          --memory 2Gi
+
+    - name: Create Worker CPU
+      run: |
+        az containerapp create \
+          --name worker-cpu \
+          --resource-group $RESOURCE_GROUP \
+          --environment $CONTAINER_ENV \
+          --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest \
+          --cpu 1 \
+          --memory 2Gi \
+          --min-replicas 1\
+          --max-replicas 10
+
+    - name: Create Worker IO
+      run: |
+        az containerapp create \
+          --name worker-io \
+          --resource-group $RESOURCE_GROUP \
+          --environment $CONTAINER_ENV \
+          --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest \
+          --cpu 1 \
+          --memory 2Gi \
+          --min-replicas 1 \
+          --max-replicas 5
+
+    - name: Create Worker Aggregation
+      run: |
+        az containerapp create \
+          --name worker-agg \
+          --resource-group $RESOURCE_GROUP \
+          --environment $CONTAINER_ENV \
+          --image mcr.microsoft.com/azuredocs/containerapps-helloworld:latest \
+          --cpu 1 \
+          --memory 2Gi \
+          --min-replicas 1 \
+          --max-replicas 5
+```

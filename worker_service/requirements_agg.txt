@@ -1,0 +1,10 @@
+celery
+redis
+azure-storage-blob
+adlfs
+python-json-logger
+sqlalchemy
+psycopg2-binary
+pyarrow
+python-dotenv
+pydantic-settings

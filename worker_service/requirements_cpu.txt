@@ -1,0 +1,9 @@
+--extra-index-url https://download.pytorch.org/whl/cpu
+
+-r requirements_base.txt
+spacy
+sentence-transformers
+torch
+emoji
+contractions
+python-dotenv

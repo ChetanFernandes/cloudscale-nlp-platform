@@ -1,0 +1,94 @@
+name: CI/CD - Deploy to Azure Container Apps
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  REGISTRY: ${{ secrets.ACR_LOGIN_SERVER }}
+  IMAGE_TAG: ${{ github.sha }}
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    # 🔐 Login to Azure
+    - name: Azure Login
+      uses: azure/login@v2 
+      with:
+        creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+    # 🔐 Login to ACR
+    - name: Login to ACR
+      run: |
+        echo ${{ secrets.ACR_PASSWORD }} | docker login $REGISTRY -u ${{ secrets.ACR_USERNAME }} --password-stdin
+
+    # 🏗️ Build & Push Images
+
+    - name: Build & Push API
+      run: |
+        docker build -t $REGISTRY/api_service:${IMAGE_TAG} -f api_service/Dockerfile .
+        docker push $REGISTRY/api_service:${IMAGE_TAG}
+
+    - name: Build & Push CPU Worker
+      run: |
+        docker build -t $REGISTRY/worker_cpu:${IMAGE_TAG} -f worker_service/Dockerfile.cpu .
+        docker push $REGISTRY/worker_cpu:${IMAGE_TAG}
+
+    - name: Build & Push IO Worker
+      run: |
+        docker build -t $REGISTRY/worker_io:${IMAGE_TAG} -f worker_service/Dockerfile.io .
+        docker push $REGISTRY/worker_io:${IMAGE_TAG}
+
+    - name: Build & Push Aggregation Worker
+      run: |
+        docker build -t $REGISTRY/worker_agg:${IMAGE_TAG} -f worker_service/Dockerfile.agg .
+        docker push $REGISTRY/worker_agg:${IMAGE_TAG}
+
+    - name: Build & Push Frontend
+      run: |
+        docker build -t $REGISTRY/frontend:${IMAGE_TAG} -f frontend_service/Dockerfile .
+        docker push $REGISTRY/frontend:${IMAGE_TAG}
+
+    # 🚀 Deploy to Azure Container Apps
+
+    - name: Deploy API Service
+      run: |
+        az containerapp update \
+          --name api-service \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --image $REGISTRY/api_service:${IMAGE_TAG}
+
+    - name: Deploy CPU Worker
+      run: |
+        az containerapp update \
+          --name worker-cpu \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --image $REGISTRY/worker_cpu:${IMAGE_TAG}
+
+    - name: Deploy IO Worker
+      run: |
+        az containerapp update \
+          --name worker-io \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --image $REGISTRY/worker_io:${IMAGE_TAG}
+
+    - name: Deploy Aggregation Worker
+      run: |
+        az containerapp update \
+          --name worker-agg \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --image $REGISTRY/worker_agg:${IMAGE_TAG}
+
+    - name: Deploy Frontend
+      run: |
+        az containerapp update \
+          --name frontend \
+          --resource-group ${{ secrets.RESOURCE_GROUP }} \
+          --image $REGISTRY/frontend:${IMAGE_TAG}
