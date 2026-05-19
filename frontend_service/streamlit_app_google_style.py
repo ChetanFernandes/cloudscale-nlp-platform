@@ -179,7 +179,7 @@ st.set_page_config(page_title="Linguistic-Intelligence", layout="wide")
 
 # -------------------- UI -------------------- #
 st.set_page_config(page_title="Multi File NLP", layout="wide")
-st.title("📊 Multi-File NLP Processing")
+st.title("📊 Multi-File-NLP-Processing")
 
 
 # ---------------- RESET BUTTON ---------------- #
