@@ -176,4 +176,3 @@ jobs:
           --memory 2Gi \
           --min-replicas 1 \
           --max-replicas 5
-```
