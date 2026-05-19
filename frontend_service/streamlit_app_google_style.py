@@ -175,7 +175,7 @@ class JobService:
 service = JobService()
 
 # -------------------- STREAMLIT UI -------------------- #
-st.set_page_config(page_title="Linguistic Intelligence", layout="wide")
+st.set_page_config(page_title="Linguistic-Intelligence", layout="wide")
 
 # -------------------- UI -------------------- #
 st.set_page_config(page_title="Multi File NLP", layout="wide")
