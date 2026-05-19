@@ -56,14 +56,14 @@ jobs:
     # Azure Redis Cache
     #########################################################
 
-    - name: Create Azure Redis Cache
-      run: |
-        az redis create \
-          --location $LOCATION \
-          --name $REDIS_NAME \
-          --resource-group $RESOURCE_GROUP \
-          --sku Basic \
-          --vm-size C0 \
+    #- name: Create Azure Redis Cache
+      #run: |
+        #az redis create \
+          #--location $LOCATION \
+          #--name $REDIS_NAME \
+          #--resource-group $RESOURCE_GROUP \
+          #--sku Basic \
+          #--vm-size C0 \
         
 
     #########################################################
@@ -82,8 +82,17 @@ jobs:
           --tier Burstable \
           --storage-size 32 \
           --version 16 \
-          --database-name $POSTGRES_DB \
           --public-access 0.0.0.0
+
+    #########################################################
+    # Create PostgreSQL Database
+    #########################################################
+    - name: Create PostgreSQL Database 
+      run: | 
+        az postgres flexible-server db create \ 
+        --resource-group $RESOURCE_GROUP \ 
+        --server-name $POSTGRES_SERVER \ 
+        --database-name $POSTGRES_DB
 
     #########################################################
     # Container Apps Environment
