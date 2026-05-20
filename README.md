@@ -6,6 +6,8 @@ A cloud-native, scalable NLP processing platform built using FastAPI, Celery, Re
 
 The platform follows a distributed microservices architecture with asynchronous task orchestration.
 
+![D:\NLP\NLP_Project\assets\NLP_Arc.png](assets/NLP_Arc.png)
+
 ## Core Components
 
     - Frontend Service → Streamlit UI for user interaction
@@ -19,6 +21,23 @@ The platform follows a distributed microservices architecture with asynchronous 
     - GitHub Actions → CI/CD automation
     - Azure Key Vault → Secret management
 
+##  Application Screenshots 
+
+    ![alt text](<assets/Screenshot 2026-05-19 020813.png>)
+
+    ![alt text](<assets/Screenshot 2026-05-20 010123.png>)
+    
+    ![alt text](<assets/Screenshot 2026-05-19 021109.png>)
+
+    ![alt text](<assets/Screenshot 2026-05-19 021128.png>)
+
+    ![alt text](<assets/Screenshot 2026-05-19 021227.png>)
+
+  # Azure resources spinned up
+
+    ![alt text](<assets/Screenshot 2026-05-19 020857.png>)
+
+    
 
 # Tech Stack
 
