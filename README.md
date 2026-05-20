@@ -286,7 +286,7 @@ The platform follows a distributed microservices architecture with asynchronous 
 
 
 # Containerized Services
-  ![containerized](assets\containerized.png)
+  ![containerized](assets/containerized.png)
 
 
 # Scalability Considerations
