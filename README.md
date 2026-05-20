@@ -1,4 +1,4 @@
-1. CloudScale NLP Platform
+# CloudScale NLP Platform
 
   A cloud-native, scalable NLP processing platform built using FastAPI, Celery, Redis, PostgreSQL, Azure Container Apps, and Streamlit. The platform supports distributed text normalization and NLP processing workloads using asynchronous microservices architecture.
 
@@ -9,14 +9,14 @@
   * Semantic keyphrases
   * Processed CSV/Excel exports
 
-2. Architecture Overview
+# Architecture Overview
 
   The platform follows a distributed microservices architecture with asynchronous task orchestration.
 
   ![D:\NLP\NLP_Project\assets\NLP_Arc.png](assets/NLP_Arc.png)
 
 
-3. Core Components
+# Core Components
 
     - Frontend Service → Streamlit UI for user interaction
     - API Service → FastAPI backend APIs
@@ -30,7 +30,7 @@
     - Azure Key Vault → Secret management
 
 
-4. Application Screenshots
+# Application Screenshots
 
   ### Frontend UI
 
@@ -55,7 +55,7 @@
   ![Output_file](assets/excel_output.png)
 
 
-5. NLP Processing Pipeline
+# NLP Processing Pipeline
    
   The platform performs distributed NLP processing using asynchronous Celery workers and SpaCy-based linguistic analysis.
 
@@ -98,7 +98,7 @@
     * Cached phrase embeddings
     * Context-aware phrase extraction
 
-6. Tech Stack
+# Tech Stack
 
   ## Backend
 
@@ -136,7 +136,7 @@
     - Sentence Transformers
 
 
-7. Project Structure
+# Project Structure
 
     cloudscale-nlp-platform/
     │
@@ -153,7 +153,7 @@
     └── pyproject.toml
 
 
-8. Distributed Worker Architecture
+# Distributed Worker Architecture
 
  The platform uses dedicated Celery workers for workload isolation.
 
@@ -181,7 +181,7 @@
         - Status updates
 
 
-9. Key Features
+# Key Features
 
   ## NLP Processing
 
@@ -213,7 +213,7 @@
     - Azure diagnostics support
 
 
-10. Database Design
+# Database Design
 
     PostgreSQL is used for:
 
@@ -225,7 +225,7 @@
     SQLAlchemy ORM is used for database abstraction.
 
 
-11. Redis Usage
+# Redis Usage
 
     Redis is used as:
 
@@ -236,7 +236,7 @@
     The platform uses secure Redis connectivity over SSL.
 
 
-12. Azure Services Used
+# Azure Services Used
 
   ## Azure Container Apps
 
@@ -285,7 +285,7 @@
     - Storage account secrets
 
 
-13. CI/CD Pipeline
+# CI/CD Pipeline
 
     GitHub Actions is used for automated deployment.
 
@@ -313,7 +313,7 @@
     - Service updates
 
 
-14. Security Practices
+# Security Practices
 
     - Secrets stored in Azure Key Vault
     - Managed identities used where applicable
@@ -323,7 +323,7 @@
     - Environment-based configuration
 
 
-15. Environment Variables
+# Environment Variables
 
     Example environment variables:
 
@@ -333,7 +333,7 @@
     STORAGE_CONNECTION_STRING=<storage-connection>
     STORAGE_ACCOUNT_KEY=<storage-key>
 
-16. Local Development
+# Local Development
 
   ## Clone Repository
     git clone https://github.com/ChetanFernandes/cloudscale-nlp-platform.git
@@ -343,7 +343,7 @@
     docker compose up --build
 
 
-17. Deployment Flow
+# Deployment Flow
 
   ## Step 1 — Infrastructure Provisioning
   Run GitHub Actions workflow: Provision Azure Infrastructure
@@ -364,11 +364,11 @@
     - Worker Services
 
 
-18. Containerized Services
+# Containerized Services
   ![containerized](assets/containerized.png)
 
 
-19. Scalability Considerations
+# Scalability Considerations
 
     - Independent worker scaling
     - Queue-based architecture
@@ -378,7 +378,7 @@
     - Auto-scaling policies for Celery workers based on queue length
     - Horizontal scaling support using Azure Container Apps and KEDA
 
-20. Auto Scaling Strategy
+# Auto Scaling Strategy
 
     The worker-cpu service is configured with auto-scaling policies using Azure Container Apps and KEDA.
 
@@ -395,7 +395,7 @@
         - High-throughput asynchronous processing
         - Improved workload distribution
 
-21. Security & RBAC
+# Security & RBAC
 
     The platform follows cloud-native security best practices.
 
@@ -422,7 +422,7 @@
     Container Apps retrieve secrets securely at runtime using Managed Identity and RBAC permissions.
 
 
-22. Future Improvements
+# Future Improvements
 
     - Kubernetes migration
     - Observability dashboards
