@@ -9,36 +9,36 @@
   * Semantic keyphrases
   * Processed CSV/Excel exports
 
-# Architecture Overview
+# 2. Architecture Overview
 
   The platform follows a distributed microservices architecture with asynchronous task orchestration.
-
+  
   ![D:\NLP\NLP_Project\assets\NLP_Arc.png](assets/NLP_Arc.png)
 
 
-# Core Components
+# 3. Core Components
 
-    - Frontend Service → Streamlit UI for user interaction
-    - API Service → FastAPI backend APIs
-    - Worker Services → Celery-based distributed workers
-    - Redis → Message broker and task queue
-    - PostgreSQL → Persistent metadata and job tracking
-    - Azure Blob Storage → File storage
-    - Azure Container Apps → Container orchestration
-    - Azure Container Registry (ACR) → Docker image registry
-    - GitHub Actions → CI/CD automation
-    - Azure Key Vault → Secret management
+  - Frontend Service → Streamlit UI for user interaction
+  - API Service → FastAPI backend APIs
+  - Worker Services → Celery-based distributed workers
+  - Redis → Message broker and task queue
+  - PostgreSQL → Persistent metadata and job tracking
+  - Azure Blob Storage → File storage
+  - Azure Container Apps → Container orchestration
+  - Azure Container Registry (ACR) → Docker image registry
+  - GitHub Actions → CI/CD automation
+  - Azure Key Vault → Secret management
 
 
-# Application Screenshots
+# 4. Application Screenshots
 
-  ### Frontend UI
+  ### a. Frontend UI
 
   ![Frontend_Look](assets/Screenshot%202026-05-19%20020813.png)
 
   ![Frontend_look](assets/Screenshot%202026-05-20%20010123.png)
 
-  ### NLP Processing Results
+  ### b. NLP Processing Results
     
   ![NLP_results](assets/Screenshot%202026-05-19%20021109.png)
 
@@ -46,20 +46,20 @@
 
   ![NLP_results](assets/Screenshot%202026-05-19%20021227.png)
 
-  ### Azure resources Provisioned
+  ### c. Azure resources Provisioned
 
   ![Azure_resources](assets/Screenshot%202026-05-19%20020857.png)
 
-  ### Output file
+  ### d. Output file
 
   ![Output_file](assets/excel_output.png)
 
 
-# NLP Processing Pipeline
+# 5. NLP Processing Pipeline
    
   The platform performs distributed NLP processing using asynchronous Celery workers and SpaCy-based linguistic analysis.
 
-  ## NLP Features Implemented
+  ## a. NLP Features Implemented
 
    ### 1. Part-of-Speech (POS) Tagging 
     Extracts grammatical roles for tokens in text.
@@ -98,9 +98,9 @@
     * Cached phrase embeddings
     * Context-aware phrase extraction
 
-# Tech Stack
+# 6. Tech Stack
 
-  ## Backend
+  ## a. Backend
 
     - Python 3.12
     - FastAPI
@@ -111,11 +111,11 @@
     - PostgreSQL
     - Azure SDK
 
-  ## Frontend
+  ## b. Frontend
 
     - Streamlit
 
-  ## Infrastructure & DevOps
+  ## c. Infrastructure & DevOps
 
     - Docker
     - Docker Compose
@@ -125,7 +125,7 @@
     - GitHub Actions
     - Azure CLI
 
-  ## NLP Technology Stack & Data Processing
+  ## d. NLP Technology Stack & Data Processing
 
     - Pandas
     - NumPy
@@ -136,7 +136,7 @@
     - Sentence Transformers
 
 
-# Project Structure
+# 7. Project Structure
 
     cloudscale-nlp-platform/
     │
@@ -153,37 +153,36 @@
     └── pyproject.toml
 
 
-# Distributed Worker Architecture
+# 8. Distributed Worker Architecture
+  The platform uses dedicated Celery workers for workload isolation.
 
- The platform uses dedicated Celery workers for workload isolation.
+  ## a. Worker Types
 
-  ## Worker Types
+   ### 1. IO Worker
+          Handles:
+              - File upload/download
+              - Blob storage operations
+              - Excel/CSV ingestion
+              - File chunking
 
-   ### IO Worker
-    Handles:
-        - File upload/download
-        - Blob storage operations
-        - Excel/CSV ingestion
-        - File chunking
+   ### 2. CPU Worker
+          Handles:
+              - NLP processing
+              - Text normalization
+              - Column processing
+              - Heavy CPU-bound transformations
 
-   ### CPU Worker
-    Handles:
-        - NLP processing
-        - Text normalization
-        - Column processing
-        - Heavy CPU-bound transformations
-
-   ### Aggregation Worker
-    Handles:
-        - Result aggregation
-        - Final output generation
-        - ZIP packaging
-        - Status updates
+   ### 3. Aggregation Worker
+          Handles:
+              - Result aggregation
+              - Final output generation
+              - ZIP packaging
+              - Status updates
 
 
-# Key Features
+# 9. Key Features
 
-  ## NLP Processing
+  ## a. NLP Processing
 
     - Text normalization
     - Aspect extraction
@@ -191,21 +190,21 @@
     - Distributed NLP execution
     - Asynchronous processing
 
-  ## Scalable Architecture
+  ## b. Scalable Architecture
 
     - Independent microservices
     - Queue-based workload distribution
     - Horizontally scalable workers
     - Containerized deployment
 
-  ## Cloud Native Deployment
+  ## c. Cloud Native Deployment
 
     - Fully containerized
     - Azure-native infrastructure
     - CI/CD enabled
     - Secret management using Key Vault
 
-  ## Monitoring & Logging
+  ## d. Monitoring & Logging
 
     - Structured logging
     - Container logs
@@ -213,7 +212,7 @@
     - Azure diagnostics support
 
 
-# Database Design
+# 10. Database Design
 
     PostgreSQL is used for:
 
@@ -225,7 +224,7 @@
     SQLAlchemy ORM is used for database abstraction.
 
 
-# Redis Usage
+# 11. Redis Usage
 
     Redis is used as:
 
@@ -236,9 +235,9 @@
     The platform uses secure Redis connectivity over SSL.
 
 
-# Azure Services Used
+# 12. Azure Services Used
 
-  ## Azure Container Apps
+  ## a. Azure Container Apps
 
     Used for hosting:
 
@@ -246,28 +245,28 @@
     - Frontend Service
     - Worker Services
 
-  ## Azure Container Registry (ACR)
+  ## b. Azure Container Registry (ACR)
 
     Used for:
 
     - Docker image storage
     - CI/CD image deployment
 
-  ## Azure Database for PostgreSQL Flexible Server
+  ## c. Azure Database for PostgreSQL Flexible Server
 
     Used for:
 
     - Relational database management
     - Persistent job tracking
 
-  ## Azure Cache for Redis
+  ## d. Azure Cache for Redis
 
     Used for:
 
     - Distributed task queue
     - Celery broker backend
 
-  ## Azure Blob Storage
+  ## e. Azure Blob Storage
 
     Used for:
 
@@ -275,7 +274,7 @@
     - Intermediate processing storage
     - Final output storage
 
-  ## Azure Key Vault
+  ## f. Azure Key Vault
 
     Used for:
 
@@ -285,11 +284,11 @@
     - Storage account secrets
 
 
-# CI/CD Pipeline
+# 13. CI/CD Pipeline
 
     GitHub Actions is used for automated deployment.
 
-  ## Infrastructure Workflow
+  ## a. Infrastructure Workflow
     infra.yml
 
     Responsible for:
@@ -300,7 +299,7 @@
     - Container Apps Environment setup
     - ACR setup
 
-  ## Deployment Workflow
+  ## b. Deployment Workflow
 
     deploy.yml
 
@@ -313,7 +312,7 @@
     - Service updates
 
 
-# Security Practices
+# 14. Security Practices
 
     - Secrets stored in Azure Key Vault
     - Managed identities used where applicable
@@ -323,7 +322,7 @@
     - Environment-based configuration
 
 
-# Environment Variables
+# 15. Environment Variables
 
     Example environment variables:
 
@@ -333,42 +332,42 @@
     STORAGE_CONNECTION_STRING=<storage-connection>
     STORAGE_ACCOUNT_KEY=<storage-key>
 
-# Local Development
+# 16. Local Development
 
-  ## Clone Repository
+  ## a. Clone Repository
     git clone https://github.com/ChetanFernandes/cloudscale-nlp-platform.git
     cd cloudscale-nlp-platform
 
-  ## Run Using Docker Compose
+  ## b. Run Using Docker Compose
     docker compose up --build
 
 
-# Deployment Flow
+# 17. Deployment Flow
 
-  ## Step 1 — Infrastructure Provisioning
-  Run GitHub Actions workflow: Provision Azure Infrastructure
+  ## a. Step 1 — Infrastructure Provisioning
+      Run GitHub Actions workflow: Provision Azure Infrastructure
 
-    This provisions:
+      This provisions:
 
-    - Resource Group
-    - ACR
-    - Redis
-    - PostgreSQL
-    - Container Apps Environment
+      - Resource Group
+      - ACR
+      - Redis
+      - PostgreSQL
+      - Container Apps Environment
 
-  ## Step 2 — Application Deployment
-  Run: Deploy Application
-  This deploys:
-    - API Service
-    - Frontend Service
-    - Worker Services
+  ## b. Step 2 — Application Deployment
+      Run: Deploy Application
+      This deploys:
+        - API Service
+        - Frontend Service
+        - Worker Services
 
 
-# Containerized Services
+# 18. Containerized Services
   ![containerized](assets/containerized.png)
 
 
-# Scalability Considerations
+# 19. Scalability Considerations
 
     - Independent worker scaling
     - Queue-based architecture
@@ -378,7 +377,7 @@
     - Auto-scaling policies for Celery workers based on queue length
     - Horizontal scaling support using Azure Container Apps and KEDA
 
-# Auto Scaling Strategy
+# 20. Auto Scaling Strategy
 
     The worker-cpu service is configured with auto-scaling policies using Azure Container Apps and KEDA.
 
@@ -395,11 +394,11 @@
         - High-throughput asynchronous processing
         - Improved workload distribution
 
-# Security & RBAC
+# 21. Security & RBAC
 
     The platform follows cloud-native security best practices.
 
-  ## Azure RBAC & Managed Identity
+  ## a. Azure RBAC & Managed Identity
 
     The platform uses Azure RBAC (Role-Based Access Control) and Managed Identity for secure cloud-native authentication.
 
@@ -410,7 +409,7 @@
 
     Azure Container Apps access Key Vault secrets securely at runtime using Managed Identity and RBAC-based authorization.
 
-  ## Azure Key Vault Integration
+  ## b. Azure Key Vault Integration
 
     Secrets are securely managed using Azure Key Vault:
 
@@ -422,7 +421,7 @@
     Container Apps retrieve secrets securely at runtime using Managed Identity and RBAC permissions.
 
 
-# Future Improvements
+# 22. Future Improvements
 
     - Kubernetes migration
     - Observability dashboards
