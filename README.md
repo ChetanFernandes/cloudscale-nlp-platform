@@ -1,15 +1,22 @@
-## CloudScale NLP Platform
+1. CloudScale NLP Platform
 
-A cloud-native, scalable NLP processing platform built using FastAPI, Celery, Redis, PostgreSQL, Azure Container Apps, and Streamlit. The platform supports distributed text normalization and NLP processing workloads using asynchronous microservices architecture.
+  A cloud-native, scalable NLP processing platform built using FastAPI, Celery, Redis, PostgreSQL, Azure Container Apps, and Streamlit. The platform supports distributed text normalization and NLP processing workloads using asynchronous microservices architecture.
 
-## Architecture Overview
+  The platform generates:
+  * POS tagging results
+  * Dependency parsing outputs
+  * Named entity recognition outputs
+  * Semantic keyphrases
+  * Processed CSV/Excel exports
 
-The platform follows a distributed microservices architecture with asynchronous task orchestration.
+2. Architecture Overview
 
-![D:\NLP\NLP_Project\assets\NLP_Arc.png](assets/NLP_Arc.png)
+  The platform follows a distributed microservices architecture with asynchronous task orchestration.
+
+  ![D:\NLP\NLP_Project\assets\NLP_Arc.png](assets/NLP_Arc.png)
 
 
-## Core Components
+3. Core Components
 
     - Frontend Service → Streamlit UI for user interaction
     - API Service → FastAPI backend APIs
@@ -23,15 +30,15 @@ The platform follows a distributed microservices architecture with asynchronous 
     - Azure Key Vault → Secret management
 
 
-## Application Screenshots
+4. Application Screenshots
 
- ### Frontend UI
+  ### Frontend UI
 
   ![Frontend_Look](assets/Screenshot%202026-05-19%20020813.png)
 
   ![Frontend_look](assets/Screenshot%202026-05-20%20010123.png)
 
- ### NLP Processing Results
+  ### NLP Processing Results
     
   ![NLP_results](assets/Screenshot%202026-05-19%20021109.png)
 
@@ -39,13 +46,59 @@ The platform follows a distributed microservices architecture with asynchronous 
 
   ![NLP_results](assets/Screenshot%202026-05-19%20021227.png)
 
- ### Azure resources Provisioned
+  ### Azure resources Provisioned
 
   ![Azure_resources](assets/Screenshot%202026-05-19%20020857.png)
 
-    
+  ### Output file
 
-# Tech Stack
+  ![Output_file](assets/excel_output.png)
+
+
+5. NLP Processing Pipeline
+   
+  The platform performs distributed NLP processing using asynchronous Celery workers and SpaCy-based linguistic analysis.
+
+  ## NLP Features Implemented
+
+   ### Part-of-Speech (POS) Tagging 
+    Extracts grammatical roles for tokens in text.
+
+    Example:
+    customer -> NOUN
+    loved -> VERB
+    service -> NOUN
+    
+   ### Dependency Parsing
+    Performs syntactic dependency analysis to understand relationships between words.
+
+    Example:
+    loved -> VERB -> ROOT
+    service -> NOUN -> dobj
+   
+   ### Named Entity Recognition (NER)
+    Identifies entities such as:
+
+    * Organizations
+    * Locations
+    * Dates
+    * People
+    * Products
+
+    Example:
+    Microsoft -> ORG
+    India -> GPE
+   
+   ### Keyphrase Extraction
+    Semantic keyphrase extraction is performed using transformer embeddings and vector similarity scoring.
+
+    Features:
+
+    * Embedding-based phrase ranking
+    * Cached phrase embeddings
+    * Context-aware phrase extraction
+
+6. Tech Stack
 
   ## Backend
 
@@ -72,17 +125,18 @@ The platform follows a distributed microservices architecture with asynchronous 
     - GitHub Actions
     - Azure CLI
 
-  ## NLP & Data Processing
+  ## NLP Technology Stack & Data Processing
 
     - Pandas
     - NumPy
     - Scikit-learn
     - OpenPyXL
     - PyArrow
+    - SpaCy
+    - Sentence Transformers
 
 
-
-# Project Structure
+7. Project Structure
 
     cloudscale-nlp-platform/
     │
@@ -99,7 +153,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     └── pyproject.toml
 
 
-# Distributed Worker Architecture
+8. Distributed Worker Architecture
 
  The platform uses dedicated Celery workers for workload isolation.
 
@@ -127,7 +181,7 @@ The platform follows a distributed microservices architecture with asynchronous 
         - Status updates
 
 
-# Key Features
+9. Key Features
 
   ## NLP Processing
 
@@ -159,7 +213,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     - Azure diagnostics support
 
 
-# Database Design
+10. Database Design
 
     PostgreSQL is used for:
 
@@ -171,7 +225,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     SQLAlchemy ORM is used for database abstraction.
 
 
-# Redis Usage
+11. Redis Usage
 
     Redis is used as:
 
@@ -182,7 +236,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     The platform uses secure Redis connectivity over SSL.
 
 
-# Azure Services Used
+12. Azure Services Used
 
   ## Azure Container Apps
 
@@ -231,7 +285,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     - Storage account secrets
 
 
-# CI/CD Pipeline
+13. CI/CD Pipeline
 
     GitHub Actions is used for automated deployment.
 
@@ -259,7 +313,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     - Service updates
 
 
-# Security Practices
+14. Security Practices
 
     - Secrets stored in Azure Key Vault
     - Managed identities used where applicable
@@ -269,7 +323,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     - Environment-based configuration
 
 
-# Environment Variables
+15. Environment Variables
 
     Example environment variables:
 
@@ -279,7 +333,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     STORAGE_CONNECTION_STRING=<storage-connection>
     STORAGE_ACCOUNT_KEY=<storage-key>
 
-# Local Development
+16. Local Development
 
   ## Clone Repository
     git clone https://github.com/ChetanFernandes/cloudscale-nlp-platform.git
@@ -289,7 +343,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     docker compose up --build
 
 
-# Deployment Flow
+17. Deployment Flow
 
   ## Step 1 — Infrastructure Provisioning
   Run GitHub Actions workflow: Provision Azure Infrastructure
@@ -310,11 +364,11 @@ The platform follows a distributed microservices architecture with asynchronous 
     - Worker Services
 
 
-# Containerized Services
+18. Containerized Services
   ![containerized](assets/containerized.png)
 
 
-# Scalability Considerations
+19. Scalability Considerations
 
     - Independent worker scaling
     - Queue-based architecture
@@ -324,7 +378,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     - Auto-scaling policies for Celery workers based on queue length
     - Horizontal scaling support using Azure Container Apps and KEDA
 
-# Auto Scaling Strategy
+20. Auto Scaling Strategy
 
     The worker-cpu service is configured with auto-scaling policies using Azure Container Apps and KEDA.
 
@@ -341,7 +395,7 @@ The platform follows a distributed microservices architecture with asynchronous 
         - High-throughput asynchronous processing
         - Improved workload distribution
 
-# Security & RBAC
+21. Security & RBAC
 
     The platform follows cloud-native security best practices.
 
@@ -368,7 +422,7 @@ The platform follows a distributed microservices architecture with asynchronous 
     Container Apps retrieve secrets securely at runtime using Managed Identity and RBAC permissions.
 
 
-# Future Improvements
+22. Future Improvements
 
     - Kubernetes migration
     - Observability dashboards
