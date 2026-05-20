@@ -22,25 +22,26 @@ The platform follows a distributed microservices architecture with asynchronous 
     - GitHub Actions → CI/CD automation
     - Azure Key Vault → Secret management
 
-##  Application Screenshots 
 
-  ### Frontend UI
+## Application Screenshots
 
-    ![Frontend_Look](assets/Screenshot%202026-05-19%20020813.png)
+ ### Frontend UI
 
-    ![Frontend_look](assets/Screenshot%202026-05-20%20010123.png)
+  ![Frontend_Look](assets/Screenshot%202026-05-19%20020813.png)
 
-  ### NLP Processing Results
+  ![Frontend_look](assets/Screenshot%202026-05-20%20010123.png)
+
+ ### NLP Processing Results
     
-    ![NLP_results](assets/Screenshot%202026-05-19%20021109.png)
+  ![NLP_results](assets/Screenshot%202026-05-19%20021109.png)
 
-    ![NLP_results](assets/Screenshot%202026-05-19%20021128.png)
+  ![NLP_results](assets/Screenshot%202026-05-19%20021128.png)
 
-    ![NLP_results](assets/Screenshot%202026-05-19%20021227.png)
+  ![NLP_results](assets/Screenshot%202026-05-19%20021227.png)
 
-  ### Azure resources Provisioned
+ ### Azure resources Provisioned
 
-    ![Azure_resources](assets/Screenshot%202026-05-19%20020857.png)
+  ![Azure_resources](assets/Screenshot%202026-05-19%20020857.png)
 
     
 
