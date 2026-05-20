@@ -23,19 +23,19 @@ The platform follows a distributed microservices architecture with asynchronous 
 
 ##  Application Screenshots 
 
-    ![alt text](<assets/Screenshot 2026-05-19 020813.png>)
+    ![Screenshot 2026-05-19 020813](assets/Screenshot 2026-05-19 020813.png)
 
-    ![alt text](<assets/Screenshot 2026-05-20 010123.png>)
+    ![Screenshot 2026-05-20 010123](assets/Screenshot 2026-05-20 010123.png)
     
-    ![alt text](<assets/Screenshot 2026-05-19 021109.png>)
+    ![Screenshot 2026-05-19 021109](assets/Screenshot 2026-05-19 021109.png)
 
-    ![alt text](<assets/Screenshot 2026-05-19 021128.png>)
+    ![Screenshot 2026-05-19 021128](assets/Screenshot 2026-05-19 021128.png)
 
-    ![alt text](<assets/Screenshot 2026-05-19 021227.png>)
+    ![Screenshot 2026-05-19 021227](assets/Screenshot 2026-05-19 021227.png)
 
   # Azure resources spinned up
 
-    ![alt text](<assets/Screenshot 2026-05-19 020857.png>)
+    ![Screenshot 2026-05-19 020857](assets/Screenshot 2026-05-19 020857.png)
 
     
 
