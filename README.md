@@ -1,5 +1,5 @@
-# 1. CloudScale NLP Platform
-
+# 1. Project - Cloud-native NLP Platform Engineering Project
+   
   A cloud-native, scalable NLP processing platform built using FastAPI, Celery, Redis, PostgreSQL, Azure Container Apps, and Streamlit. The platform supports distributed text normalization and NLP processing workloads using asynchronous microservices architecture.
 
   The platform generates:
@@ -9,12 +9,14 @@
   * Semantic keyphrases
   * Processed CSV/Excel exports
 
+  # Author 
+    Chetan Fernandes
+
 # 2. Architecture Overview
 
   The platform follows a distributed microservices architecture with asynchronous task orchestration.
-  
-  ![D:\NLP\NLP_Project\assets\NLP_Arc.png](assets/NLP_Arc.png)
 
+  ![D:\NLP\NLP_Project\assets\NLP_Arc.png](assets/NLP_Arc.png)
 
 # 3. Core Components
 
@@ -136,7 +138,60 @@
     - Sentence Transformers
 
 
-# 7. Project Structure
+# 7. Key Features
+
+  ## a. NLP Processing
+
+    - Distributed NLP execution
+    - Asynchronous processing
+
+  ## b. Scalable Architecture
+
+    - Independent microservices
+    - Queue-based workload distribution
+    - Horizontally scalable workers
+    - Containerized deployment
+
+  ## c. Cloud Native Deployment
+
+    - Fully containerized
+    - Azure-native infrastructure
+    - CI/CD enabled
+    - Secret management using Key Vault
+
+  ## d. Monitoring & Logging
+
+    - Structured logging
+    - Container logs
+    - Celery worker monitoring
+    - Azure diagnostics support
+
+  ## e. Idempotent Task Processing
+
+    The platform is designed with idempotent distributed task execution principles to ensure reliable asynchronous processing.
+
+    Key mechanisms implemented:
+
+    - Safe task retries using Celery
+    - Duplicate task prevention strategies
+    - Database-backed job tracking
+    - Fault-tolerant worker execution
+    - Retry-safe processing workflows
+
+    This ensures:
+    - Consistent processing results
+    - Recovery from transient failures
+    - Reliable distributed execution
+    - Prevention of duplicate NLP processing
+
+    Idempotency is especially important for:
+    - File processing workflows
+    - Distributed worker retries
+    - Long-running NLP operations
+    - Queue-based asynchronous execution
+
+
+# 8. Project Structure
 
     cloudscale-nlp-platform/
     │
@@ -153,7 +208,7 @@
     └── pyproject.toml
 
 
-# 8. Distributed Worker Architecture
+# 9. Distributed Worker Architecture
   The platform uses dedicated Celery workers for workload isolation.
 
   ## a. Worker Types
@@ -178,38 +233,6 @@
               - Final output generation
               - ZIP packaging
               - Status updates
-
-
-# 9. Key Features
-
-  ## a. NLP Processing
-
-    - Text normalization
-    - Aspect extraction
-    - Chunk processing
-    - Distributed NLP execution
-    - Asynchronous processing
-
-  ## b. Scalable Architecture
-
-    - Independent microservices
-    - Queue-based workload distribution
-    - Horizontally scalable workers
-    - Containerized deployment
-
-  ## c. Cloud Native Deployment
-
-    - Fully containerized
-    - Azure-native infrastructure
-    - CI/CD enabled
-    - Secret management using Key Vault
-
-  ## d. Monitoring & Logging
-
-    - Structured logging
-    - Container logs
-    - Celery worker monitoring
-    - Azure diagnostics support
 
 
 # 10. Database Design
@@ -427,12 +450,3 @@
     - Observability dashboards
     - Authentication & RBAC
     - GPU-based NLP inference
-
-
-
-# Author
-
-Chetan Fernandes
-
-Cloud-native NLP Platform Engineering Project
-
