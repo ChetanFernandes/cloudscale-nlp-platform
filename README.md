@@ -8,6 +8,7 @@ The platform follows a distributed microservices architecture with asynchronous 
 
 ![D:\NLP\NLP_Project\assets\NLP_Arc.png](assets/NLP_Arc.png)
 
+
 ## Core Components
 
     - Frontend Service → Streamlit UI for user interaction
@@ -23,19 +24,23 @@ The platform follows a distributed microservices architecture with asynchronous 
 
 ##  Application Screenshots 
 
-    ![Screenshot 2026-05-19 020813](assets/Screenshot 2026-05-19 020813.png)
+  ### Frontend UI
 
-    ![Screenshot 2026-05-20 010123](assets/Screenshot 2026-05-20 010123.png)
+    ![Frontend_Look](assets/Screenshot%202026-05-19%20020813.png)
+
+    ![Frontend_look](assets/Screenshot%202026-05-20%20010123.png)
+
+  ### NLP Processing Results
     
-    ![Screenshot 2026-05-19 021109](assets/Screenshot 2026-05-19 021109.png)
+    ![NLP_results](assets/Screenshot%202026-05-19%20021109.png)
 
-    ![Screenshot 2026-05-19 021128](assets/Screenshot 2026-05-19 021128.png)
+    ![NLP_results](assets/Screenshot%202026-05-19%20021128.png)
 
-    ![Screenshot 2026-05-19 021227](assets/Screenshot 2026-05-19 021227.png)
+    ![NLP_results](assets/Screenshot%202026-05-19%20021227.png)
 
-  # Azure resources spinned up
+  ### Azure resources Provisioned
 
-    ![Screenshot 2026-05-19 020857](assets/Screenshot 2026-05-19 020857.png)
+    ![Azure_resources](assets/Screenshot%202026-05-19%20020857.png)
 
     
 
