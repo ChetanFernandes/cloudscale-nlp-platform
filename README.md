@@ -1,4 +1,4 @@
-# CloudScale NLP Platform
+# 1. CloudScale NLP Platform
 
   A cloud-native, scalable NLP processing platform built using FastAPI, Celery, Redis, PostgreSQL, Azure Container Apps, and Streamlit. The platform supports distributed text normalization and NLP processing workloads using asynchronous microservices architecture.
 
@@ -61,7 +61,7 @@
 
   ## NLP Features Implemented
 
-   ### Part-of-Speech (POS) Tagging 
+   ### 1. Part-of-Speech (POS) Tagging 
     Extracts grammatical roles for tokens in text.
 
     Example:
@@ -69,14 +69,14 @@
     loved -> VERB
     service -> NOUN
     
-   ### Dependency Parsing
+   ### 2. Dependency Parsing
     Performs syntactic dependency analysis to understand relationships between words.
 
     Example:
     loved -> VERB -> ROOT
     service -> NOUN -> dobj
    
-   ### Named Entity Recognition (NER)
+   ### 3. Named Entity Recognition (NER)
     Identifies entities such as:
 
     * Organizations
@@ -89,7 +89,7 @@
     Microsoft -> ORG
     India -> GPE
    
-   ### Keyphrase Extraction
+   ### 4. Keyphrase Extraction
     Semantic keyphrase extraction is performed using transformer embeddings and vector similarity scoring.
 
     Features:
